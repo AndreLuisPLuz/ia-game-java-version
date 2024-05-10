@@ -30,24 +30,47 @@ public class Massacration extends Player{
         else return null;
     }
 
+    Boolean isloading;
+    int i = 0;
+
     @Override
     protected void loop() {
-        if(getEntitiesInAccurateSonar().size() == 0) AccurateSonar();
-        else {
-            if(getEnergy() > 30) {
-                // if(return_enemy_point() != null) {
-                //     Float newX = -(return_enemy_point().getX());
-                //     Float newY = -(return_enemy_point().getY());
-                //     Point oposite_direction = new Point(newX, newY);
+        enemy = 
+            getEnemiesInInfraRed().size() > 0 ?
+            getEnemiesInInfraRed().get(0) : null;
 
-                //     MoveTo(oposite_direction);
-                // }
-                if(return_food_point() != null) {
-                    while(getLocation() != return_food_point()) {
-                        MoveTo(return_food_point());
-                    }
-                }
-            }
+        food = 
+            getFoodsInInfraRed().size() > 0 ?
+            getFoodsInInfraRed().get(0) : null;
+
+        if (getEnergy() < 10)
+        {
+            StopMove();
+            isloading = true;
+            enemy = null;
         }
+
+        if (getEnergy() > 60)
+            isloading = false;
+
+        if (isloading)
+            return;
+
+        if (enemy == null) {
+            InfraRedSensor(5f * i++);
+            return;
+        }
+
+        InfraRedSensorTo(enemy);
+        float dx = enemy.getX() - getLocation().getX();
+        float dy = enemy.getY() - getLocation().getY();
+         
+        // int y = 0;
+        // float x = getLocation().getX() + y;
+        
+        // Point point = new Point(x, getLocation().ge)
+
+        if (dx * dx + dy * dy >= 100f * 100f)
+            ShootTo(enemy);
     }
 }
