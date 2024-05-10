@@ -15,6 +15,39 @@ public class DriftKing extends Player {
     int frame = 0;
     int points = 0;
 
+    Point target = null;
+    boolean laser = false;
+
+    // @Override
+    // protected void newLoop() {
+    //     StartTurbo();
+
+    //     isloading = getEnergy() < 10;
+    //     if(isloading == true) {
+    //         StopMove();
+    //         target = null;
+    //         return;
+    //     }
+        
+    //     if(getEntitiesInAccurateSonar().size() == 0) {
+    //         AccurateSonar();
+    //         laser = getEntitiesInAccurateSonar().size() == 0;
+    //         return;
+    //     }
+
+    //     if(laser) {
+    //         if(target == null) {
+    //             InfraRedSensor(5f * i++);
+    //             return;
+    //         }
+    //     } 
+        
+    //     if (getEnemiesInInfraRed().size() == 0) {
+    //         InfraRedSensorTo(getEntitiesInAccurateSonar().get(searchindex++ % getEntitiesInAccurateSonar().size()));
+    //         return;
+    //     }
+    // }
+
     @Override
     protected void loop()
     {
@@ -35,7 +68,7 @@ public class DriftKing extends Player {
 
         if(isloading) {
             frame++;
-            if (getEnergy() < 10 || frame % 10 == 0)
+            if (getEnergy() < 10 || frame % 20 == 0)
                 return;
             
             if (getEntitiesInStrongSonar() == 0)
