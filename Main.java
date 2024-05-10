@@ -32,7 +32,7 @@ public class Main {
 
         screen.setSize(frame.getSize());
 
-        screen.AddPlayer(TreviPlayer.class);
+        screen.AddPlayer(Massacration.class);
         screen.AddPlayer(DonPlayer.class);
         screen.AddPlayer(Joelma.class);
     }
