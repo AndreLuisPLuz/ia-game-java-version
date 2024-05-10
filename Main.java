@@ -34,5 +34,10 @@ public class Main {
 
         screen.AddPlayer(Massacration.class);
         screen.AddPlayer(DonPlayer.class);
+<<<<<<< HEAD
+        screen.AddPlayer(Joelma.class);
+=======
+        screen.AddPlayer(MoranguinhoPlayer.class);
+>>>>>>> 48d3f8159d7a558c327310be9ec6f0d0a3575acf
     }
 }
