@@ -34,6 +34,5 @@ public class Main {
 
         screen.AddPlayer(TreviPlayer.class);
         screen.AddPlayer(DonPlayer.class);
-        screen.AddPlayer(CamperPlayer.class);
     }
 }
