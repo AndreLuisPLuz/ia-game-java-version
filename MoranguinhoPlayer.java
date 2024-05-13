@@ -31,16 +31,25 @@ public class MoranguinhoPlayer extends Player {
             angleModifierX = 1;
         } else if (getLocation().getX() <= 960 && getLocation().getY() >= 540) {
             cornerToGo = new Point(0, 1080);
-            angleModifierX = 1;
+            startingY = 1030;
             angleModifierY = 1;
+
+            startingX = 0;
+            angleModifierX = 1;
         } else if (getLocation().getX() >= 960 && getLocation().getY() <= 540) {
             cornerToGo = new Point(1920, 0);
-            angleModifierX = -1;
+            startingY = 50;
             angleModifierY = -1;
+
+            startingX = 1920;
+            angleModifierX = -1;
         } else if (getLocation().getX() >= 960 && getLocation().getY() >= 540) {
             cornerToGo = new Point(1920, 1080);
+            startingY = 1030;
+            angleModifierY = 1;
+
+            startingX = 1920;
             angleModifierX = -1;
-            angleModifierY = +1;
         }
     }
 
