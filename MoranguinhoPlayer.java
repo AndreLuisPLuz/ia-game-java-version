@@ -19,16 +19,16 @@ public class MoranguinhoPlayer extends Player {
     int currentShot = 0;
 
     public MoranguinhoPlayer(Point location) {
-        super(new Point(0, 0), Color.red, Color.green, "Moranguinho");
+        super(location, Color.red, Color.green, "Moranguinho");
 
         if (getLocation().getX() <= 960 && getLocation().getY() <= 540) {
             cornerToGo = new Point(0, 0);
 
             startingY = 50;
-            finalY = 0;
-
-            angleModifierX = 1;
             angleModifierY = -1;
+
+            startingX = 0;
+            angleModifierX = 1;
         } else if (getLocation().getX() <= 960 && getLocation().getY() >= 540) {
             cornerToGo = new Point(0, 1080);
             angleModifierX = 1;
@@ -80,8 +80,8 @@ public class MoranguinhoPlayer extends Player {
     }
 
     private Point angleToShoot() {
-        int x = currentShot * 20 * angleModifierX;
-        int y = (currentShot * 20 * angleModifierY);
+        int x = startingX + (currentShot * 5 * angleModifierX);
+        int y = startingY + (currentShot * 5 * angleModifierY);
 
         currentShot++;
 
