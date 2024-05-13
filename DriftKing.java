@@ -6,122 +6,72 @@ public class DriftKing extends Player {
         super(location, Color.cyan, Color.white, "Drift King");
     }
 
+    int frame = 0;
     int i = 0;
     Point enemy = null;
     Point fruit = null;
-    boolean isloading = false;
-    int shootError = 20;
-    int searchindex = 0;
-    int frame = 0;
     int points = 0;
-
-    Point target = null;
-    boolean laser = false;
-
-    // @Override
-    // protected void newLoop() {
-    //     StartTurbo();
-
-    //     isloading = getEnergy() < 10;
-    //     if(isloading == true) {
-    //         StopMove();
-    //         target = null;
-    //         return;
-    //     }
-        
-    //     if(getEntitiesInAccurateSonar().size() == 0) {
-    //         AccurateSonar();
-    //         laser = getEntitiesInAccurateSonar().size() == 0;
-    //         return;
-    //     }
-
-    //     if(laser) {
-    //         if(target == null) {
-    //             InfraRedSensor(5f * i++);
-    //             return;
-    //         }
-    //     } 
-        
-    //     if (getEnemiesInInfraRed().size() == 0) {
-    //         InfraRedSensorTo(getEntitiesInAccurateSonar().get(searchindex++ % getEntitiesInAccurateSonar().size()));
-    //         return;
-    //     }
-    // }
-
+    
     @Override
     protected void loop()
     {
+        frame++;    
+        i++;
         StartTurbo();
-        enemy = 
-            getEnemiesInInfraRed().size() > 0 ?
-            getEnemiesInInfraRed().get(0) : null;
-        
-        if(getEnergy() < 10)
-        {
+
+        if(getEnergy() < 20) {
             StopMove();
-            isloading = true;
-            enemy = null;
-        }
-
-        if(getEnergy() > 30)
-            isloading = false;
-
-        if(isloading) {
-            frame++;
-            if (getEnergy() < 10 || frame % 20 == 0)
-                return;
-            
-            if (getEntitiesInStrongSonar() == 0)
-            {
-                StrongSonar();
-                points = getPoints();
-                return;
-            }
-
-            if (getEntitiesInAccurateSonar().size() == 0)
-            {
-                AccurateSonar();
-                return;
-            }
-
-            if (getFoodsInInfraRed().size() == 0)
-            {
-                InfraRedSensorTo(getEntitiesInAccurateSonar().get(searchindex++ % getEntitiesInAccurateSonar().size()));
-                return;
-            }
-            
-            MoveTo(getFoodsInInfraRed().get(0));
-            if (getPoints() != points)
-            {
-                StartTurbo();
-                StrongSonar();
-                StopMove();
-                ResetInfraRed();
-                ResetSonar();
-            }
-        }
-
-        // if(enemy == null && getFoodsInInfraRed().size() > 0) {
-        //     MoveTo(getFoodsInInfraRed().get(0));
-        // }
-
-        if(enemy == null) {
-            InfraRedSensor(5f * i++);
+            StopTurbo();
             return;
         }
         
-        InfraRedSensorTo(enemy);
-        float dx = enemy.getX() - getLocation().getX();
-        float dy = enemy.getY() - getLocation().getY();
-        if(dx * dx + dy * dy >= 300f * 300f)
-            MoveTo(enemy);
-        else
-        {
-            StopMove();
-            if (i++ % 5 == 0)
-                ShootTo(new Point(enemy.getX() + (shootError++ % 50) - 25, enemy.getY() + (shootError++ % 50) - 25));
+        if(enemy != null && frame % 15 == 0)
+            ShootTo(enemy);
+        if(fruit != null)
+            MoveTo(fruit);
+
+        if(frame % 150 == 0)
+            enemy = null;
+        
+        if(frame % 3 == 0)
+            InfraRedSensor(5f * i);
+        
+        
+        if(getFoodsInInfraRed().size() > 0) {
+            if(fruit == null) {
+                fruit = getFoodsInInfraRed().get(0);
+                return;
+            }
+            float newFruitX = getFoodsInInfraRed().get(0).getX() - getLocation().getX();
+            float newFruitY = getFoodsInInfraRed().get(0).getY() - getLocation().getY();
+            float fruitX = fruit.getX() - getLocation().getX();
+            float fruitY = fruit.getY() - getLocation().getY();
+
+            if (newFruitX * newFruitX + newFruitY * newFruitY < fruitX * fruitX + fruitY * fruitY)
+                fruit = getFoodsInInfraRed().get(0);
         }
 
+        if(getEnemiesInInfraRed().size() > 0) {
+            if(enemy == null) {
+                enemy = getEnemiesInInfraRed().get(0);
+                return;
+            }
+            float newEnemyX = getEnemiesInInfraRed().get(0).getX() - getLocation().getX();
+            float newEnemyY = getEnemiesInInfraRed().get(0).getY() - getLocation().getY();
+            float enemyX = enemy.getX() - getLocation().getX();
+            float enemyY = enemy.getY() - getLocation().getY();
+
+            if (newEnemyX * newEnemyX + newEnemyY * newEnemyY < enemyX * enemyX + enemyY * enemyY)
+                enemy = getEnemiesInInfraRed().get(0);
+        }
         
+        if (getPoints() != points)
+        {
+            fruit = null;
+            StopMove();
+            ResetInfraRed();
+            points = getPoints();
+        }
     }
 }
+
