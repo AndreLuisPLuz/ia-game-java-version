@@ -34,7 +34,11 @@ public class Main {
 
         screen.setSize(frame.getSize());
 
-        screen.AddPlayer(TreviPlayer.class);
-        screen.AddPlayer(Joelma2.class);
+        screen.AddPlayer(DriftKing.class);
+        screen.AddPlayer(Joelma.class);
+        screen.AddPlayer(Atom.class);
+        screen.AddPlayer(MoranguinhoPlayer.class);
+        screen.AddPlayer(CamperPlayer.class);
+        screen.AddPlayer(Massacration.class);
     }
 }
