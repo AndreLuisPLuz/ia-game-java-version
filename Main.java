@@ -3,6 +3,8 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
+
 public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
@@ -33,6 +35,6 @@ public class Main {
         screen.setSize(frame.getSize());
 
         screen.AddPlayer(TreviPlayer.class);
-        screen.AddPlayer(DonPlayer.class);
+        screen.AddPlayer(Joelma2.class);
     }
 }
