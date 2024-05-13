@@ -35,13 +35,11 @@ public class Main {
         screen.setSize(frame.getSize());
 
 
-<<<<<<< HEAD
-=======
-        screen.AddPlayer(Massacration2.class);
-        screen.AddPlayer(TreviPlayer.class);
->>>>>>> 4e509290da38bdc252dada68e981a0ef67dd83de
         screen.AddPlayer(DriftKing.class);
         screen.AddPlayer(Joelma.class);
-
+        screen.AddPlayer(CamperPlayer.class);
+        screen.AddPlayer(Massacration2.class);
+        screen.AddPlayer(MoranguinhoPlayer.class);
+        screen.AddPlayer(Atom.class);
     }
 }
