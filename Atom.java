@@ -12,6 +12,8 @@ public class Atom extends Player {
     Point enemy = null;
     boolean isloading = false;
     int i = 0;
+    int count_fires=0;
+    int stop_fire =0;
 
     @Override
     protected void loop() {
@@ -34,7 +36,6 @@ public class Atom extends Player {
         if (getEnergy() < 10) {
             StopMove();
             isloading = true;
-            enemy = null;
             StopTurbo();
 
         }
@@ -48,9 +49,10 @@ public class Atom extends Player {
         InfraRedSensorTo(enemy);
         float dx = enemy.getX() - getLocation().getX();
         float dy = enemy.getY() - getLocation().getY();
-        if (dx * dx + dy * dy >= 600f * 600f)
+        if (dx * dx + dy * dy >= 500f * 500f)
         {
             AccurateSonar();
+            StopTurbo();
             if (getEntitiesInAccurateSonar().isEmpty()) {
 
             } else {
@@ -62,9 +64,24 @@ public class Atom extends Player {
             MoveTo(enemy);
         else {
             StopMove();
-            if (i++ % 1 == 0){
-                ShootTo(enemy);
+            if (count_fires >= 10) {
+                stop_fire++;    
             }
+
+            if(stop_fire>=25){
+                count_fires =0;
+                stop_fire =0;
+            }
+
+            if (count_fires <=10) {
+                if (i++ % 1 == 0){
+                    ShootTo(enemy);
+                    count_fires++;
+                    
+                }
+            }
+
+            
 
           
         }
