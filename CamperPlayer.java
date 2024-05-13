@@ -70,10 +70,19 @@ public class CamperPlayer extends Player{
     int refind_delay = 300;
 
     int shoot_index = 0;
+
+    boolean recenter = false;
+
+
     @Override
     protected void loop() {
         frames++;
         refindDelay--;
+
+        if (getLocation().getX() >= 1920 || getLocation().getY() >= 1080) {
+            recenter = true;
+        }
+
 
         float dist = -1;
 
@@ -100,6 +109,7 @@ public class CamperPlayer extends Player{
 
         //Move to food
         if (frames % 10 == 0) {
+            getEntitiesInAccurateSonar().clear();
             AccurateSonar();
         }
 
@@ -113,8 +123,13 @@ public class CamperPlayer extends Player{
 
         if (randomEntity != null) {
             MoveTo(randomEntity);
-        } else if (enemyFound) {
-            MoveTo(enemyLocation);
+        }
+
+        if (randomEntity == null && getEntitiesInAccurateSonar().size() == 0) {
+            if (enemyLocation != null) {
+                MoveTo(enemyLocation);
+            }
+            
         }
 
         if (randomEntity != null)
@@ -139,7 +154,7 @@ public class CamperPlayer extends Player{
 
         if (enemyFound && frames % 5 == 0) {
             InfraRedSensorTo(enemyLocation);
-            // enemyFound = false;
+            enemyFound = false;
             
             if (getEnemiesInInfraRed().size() > 0) {
                 enemyFound = true;
