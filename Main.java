@@ -35,5 +35,6 @@ public class Main {
         screen.AddPlayer(TreviPlayer.class);
         screen.AddPlayer(DriftKing.class);
         screen.AddPlayer(Joelma.class);
+        screen.AddPlayer(CamperPlayer.class);
     }
 }
