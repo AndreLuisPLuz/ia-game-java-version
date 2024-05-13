@@ -9,7 +9,7 @@ public class DriftKing extends Player {
     int frame = 0;
     int i = 0;
     Point enemy = null;
-    Point fruit = null;
+    Point fruit = new Point(0, 0);
     int points = 0;
     
     @Override
@@ -21,19 +21,18 @@ public class DriftKing extends Player {
 
         if(getEnergy() < 20) {
             StopMove();
-            StopTurbo();
             return;
         }
         
-        if(enemy != null && frame % 15 == 0)
+        if(enemy != null && frame % 10 == 0)
             ShootTo(enemy);
         if(fruit != null)
             MoveTo(fruit);
 
-        if(frame % 150 == 0)
+        if(frame % 200 == 0)
             enemy = null;
         
-        if(frame % 3 == 0)
+        if(frame % 4 == 0)
             InfraRedSensor(5f * i);
         
         
@@ -68,7 +67,6 @@ public class DriftKing extends Player {
         if (getPoints() != points)
         {
             fruit = null;
-            StopMove();
             ResetInfraRed();
             points = getPoints();
         }
