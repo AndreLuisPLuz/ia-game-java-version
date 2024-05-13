@@ -1,51 +1,51 @@
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class MoranguinhoPlayer extends Player {
     int i = 0;
+    int cycle = 0;
     Point enemy = null;
     Point cornerToGo;
     boolean isloading = false;
 
     int startingX;
-    int finalX;
     int angleModifierX;
     int startingY;
-    int finalY;
     int angleModifierY;
 
     float angle;
     float modifyAngle;
 
     int currentShot = 0;
+    int shotsPerRound = 20;
 
     public MoranguinhoPlayer(Point location) {
         super(location, Color.red, Color.green, "Moranguinho");
 
         if (getLocation().getX() <= 960 && getLocation().getY() <= 540) {
             cornerToGo = new Point(0, 0);
-
-            startingY = 50;
+            startingY = shotsPerRound * 5;
             angleModifierY = -1;
 
             startingX = 0;
             angleModifierX = 1;
         } else if (getLocation().getX() <= 960 && getLocation().getY() >= 540) {
             cornerToGo = new Point(0, 1080);
-            startingY = 1030;
+            startingY = 1080 - shotsPerRound * 5;
             angleModifierY = 1;
 
             startingX = 0;
             angleModifierX = 1;
         } else if (getLocation().getX() >= 960 && getLocation().getY() <= 540) {
             cornerToGo = new Point(1920, 0);
-            startingY = 50;
+            startingY = shotsPerRound * 5;
             angleModifierY = -1;
 
             startingX = 1920;
             angleModifierX = -1;
         } else if (getLocation().getX() >= 960 && getLocation().getY() >= 540) {
             cornerToGo = new Point(1920, 1080);
-            startingY = 1030;
+            startingY = 1080 - shotsPerRound * 5;
             angleModifierY = 1;
 
             startingX = 1920;
@@ -81,7 +81,7 @@ public class MoranguinhoPlayer extends Player {
     
         float dx = enemy.getX() - getLocation().getX();
         float dy = enemy.getY() - getLocation().getY();
-        if (dx * dx + dy * dy >= 300f * 300f && (i % 10 == 0)) {
+        if (dx * dx + dy * dy >= 300f * 300f && (cycle % 3 == 0)) {
             ShootTo(enemy);
         }
 
@@ -122,12 +122,14 @@ public class MoranguinhoPlayer extends Player {
             if (isloading)
                 return;
 
-            if (i++ % 3 == 0)
+            if (cycle % 2 == 0)
                 ShootTo(angleToShoot());
                 System.out.println("atirei");
 
-            if (currentShot >= 100)
+            if (currentShot >= 20)
                 currentShot = 0;
         }
+
+        cycle++;
     }
 }
