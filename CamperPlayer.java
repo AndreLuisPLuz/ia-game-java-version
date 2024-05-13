@@ -1,8 +1,5 @@
 import java.awt.Color;
-import java.io.ObjectInputStream.GetField;
-import java.util.Random;
 
-import javafx.beans.property.ReadOnlyLongProperty;
 
 public class CamperPlayer extends Player{
 
@@ -16,15 +13,15 @@ public class CamperPlayer extends Player{
         super(location, new Color(162, 39, 171, 100), Color.BLACK, "GUARDA_CAIXÃO");
     }
 
-    Point randomPoint = null;
-
-    long frames = 0;
-    float angle = 0f;
-    int enemyTimer = 0;
-    Boolean enemyFound = false;
+    Point movePoint = new Point(200, 200);
     Point enemyLocation = null;
-    Float enemyDistance = null;
-    Boolean refindingEnemy = false;
+
+    int frames = 0;
+    int refindDelay = 100;
+    float angle = 0;
+
+    boolean enemyFound = false;
+    boolean refinding = false;
 
     // EnemyInfo enemyInfo;
 
@@ -53,83 +50,55 @@ public class CamperPlayer extends Player{
         }
     }
 
-    
+  
+    void genMovePoint(float dist) {
+        float dx = enemyLocation.getX() - getLocation().getX();
+        dx = (float)Math.sqrt(dx * dx);
 
-    float aux = 0, aux2 = 30;
+        float dy = enemyLocation.getY() - getLocation().getY();
+        dy = (float)Math.sqrt(dy*dy);
 
-    Boolean enemyFound() {
-        return  getEnemiesInInfraRed().size() > 0;
+        float vx = dx / (float)Math.sqrt(dx*dx + dy*dy);
+        float vy = dy / (float)Math.sqrt(dx*dx + dy*dy);
+
+        movePoint = new Point(enemyLocation.getX() + dist * vy, enemyLocation.getY() - dist * vx);
     }
+
 
     @Override
     protected void loop() {
         frames++;
-        enemyTimer--;
-
-        if (randomPoint == null) {
-            Random rd = new Random();
-
-            randomPoint = new Point(rd.nextFloat() * 1400, rd.nextFloat() * 900);
-        }
-
-        if (distanceBetweenPoints(getLocation(), randomPoint) < 20) {
-            randomPoint = null;
-            return;
-        }
+        float dist = -1;
 
         if (getEnergy() < 20) {
-            StopMove();
             return;
         }
 
-
-        System.out.printf("Energy %3.2f | Life : %3.2f Location X: %3.2f Location Y: %3.2f\r", getEnergy(), getLife(), getLocation().getX(), getLocation().getY());
-
-        enemyFound = enemyFound();
         
-        if (!enemyFound) {
-            InfraRedSensor(angle += 2.2);
-            return;
+        
+        if (!enemyFound && !refinding) {
+            InfraRedSensor(angle *= 1.1);
         }
-        
-        if (null == enemyLocation) {
-            enemyTimer = 60;
+
+        if (enemyLocation != null) {
+            dist = distanceBetweenPoints(getLocation(), enemyLocation);
+
+            if (dist > 100) {
+                StopTurbo();
+            } else {
+                StartTurbo();
+            }
+            genMovePoint(30);
+            StartMove(movePoint);
+        }
+
+        if (getEnemiesInInfraRed().size() > 0) {
             enemyLocation = getEnemiesInInfraRed().get(0);
-            enemyDistance = distanceBetweenPoints(enemyLocation, getLocation());
-            getEnemiesInInfraRed().clear();
-            refindingEnemy =false;
+            enemyFound = true;
         }
 
-        // MoveTo(enemyLocation);
-        if (enemyFound && enemyTimer <= 0 && refindingEnemy == false) {
-            refindingEnemy = true;
-            aux = 1;
-            aux2 = 30;
-        }
-
-        if (refindingEnemy) {
-
-            if (aux2 > -30) {
-                InfraRedSensor(angle  + aux2--);
-            }
-            
-            if (aux2 <= -30 || enemyFound()){
-                refindingEnemy = false;
-                enemyFound = false;
-                enemyLocation = null;
-                aux2 = 30;
-            }
-
-            return;
-        }
-
-        if (frames % getValue(enemyDistance) == 0) ShootTo(enemyLocation);
-
-        //move
         
-        if (frames % 10 == 0) {
-            MoveTo(randomPoint);
-        }
+        
 
     }
 }
