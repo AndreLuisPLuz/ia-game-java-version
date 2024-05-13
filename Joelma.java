@@ -9,8 +9,7 @@ public class Joelma extends Player {
     int i = 0;
     Point enemy = null;
     boolean isloading = false;
-    Point obj = null;
-    Double theta = null;
+    Point enemy2 = null;
 
     @Override
     protected void loop() {
@@ -38,27 +37,18 @@ public class Joelma extends Player {
             InfraRedSensorTo(enemy);
             float dx = enemy.getX() - getLocation().getX();
             float dy = enemy.getY() - getLocation().getY();
-            if (dx * dx + dy * dy >= 300f * 300f)
+            if (dx * dx + dy * dy >= 500f * 500f)
                 MoveTo(enemy);
             else {
-                if (theta == null)
-                    theta = Math.atan2(dy, dx);
-                System.out.println(theta);
-                
-                double novoX = enemy.getX() + 300f * Math.cos(theta + Math.PI);
-                double novoY = enemy.getY() + 300f * Math.sin(theta + Math.PI);
-                obj = new Point((float)novoX, (float)novoY);
-
-                dx = obj.getX() - getLocation().getX();
-                dy = obj.getY() - getLocation().getY();
-                System.out.println(dx * dx + dy * dy);
-
-                if (dx * dx + dy * dy < 15 * 15)
-                    theta += 0.05;
-
-                MoveTo(obj);
                 if (i++ % 4 == 0) {
-                    ShootTo(enemy);
+                    if (getEnergy() > 30) {
+                        ShootTo(enemy);
+                        enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));
+                        MoveTo(enemy2);
+                    } else {
+                        enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));
+                        MoveTo(enemy2);
+                    }
                 }
             }
         }
