@@ -11,6 +11,7 @@ public class Atom extends Player {
     int points = 0;
     Point enemy = null;
     Point enemy2 = null;
+    Point lasMove = null;
     boolean isloading = false;
     int i = 0;
     int j = 0;
@@ -19,32 +20,26 @@ public class Atom extends Player {
     int stop_fire = 0;
     float dx;
     float dy;
+    long time = System.currentTimeMillis();
 
     @Override
     protected void loop() {
 
-        // AccurateSonar();
-        // if(getEntitiesInAccurateSonar().isEmpty()){
-
-        // }
-        // else
-        // {
-        // MoveTo(getEntitiesInAccurateSonar().get(0));
-        // }
         StartTurbo();
         enemy = getEnemiesInInfraRed().size() > 0 ? getEnemiesInInfraRed().get(0) : null;
 
         if (enemy == null) {
             InfraRedSensor(5f * i++);
+            StopTurbo();
             return;
         }
         if (getEnergy() < 10) {
             StopMove();
-            isloading = true;
             StopTurbo();
+            isloading = true;
         }
 
-        if (getEnergy() > 60)
+        if (getEnergy() > 40)
             isloading = false;
 
         if (getEnergy() > 90)
@@ -53,40 +48,26 @@ public class Atom extends Player {
         if (isloading)
             return;
 
-        if (i++ % 8 == 0) {
+        if (i++ % 15 == 0) {
             InfraRedSensorTo(enemy);
+            AccurateSonar();
             dx = enemy.getX() - getLocation().getX();
             dy = enemy.getY() - getLocation().getY();
 
-        }
-
-        // if (dx * dx + dy * dy >= 700f * 700f) {
-        // AccurateSonar();
-        // // if (getEntitiesInAccurateSonar().isEmpty()) {
-        // // dx = enemy.getX() ;
-        // // dy = enemy.getY() ;
-        // MoveTo(getEntitiesInAccurateSonar().get(0));
-        // ShootTo(enemy);
-
-        // // } else {
-        // // MoveTo(getEntitiesInAccurateSonar().get(0));
-        // // }
-        // }
-        if(j++ % 50 == 0)
-        {
-            AccurateSonar();
         }
         
         if(j++ % 20 == 0)
         {
             if (getEntitiesInAccurateSonar().size() > 0) {
                 MoveTo(getEntitiesInAccurateSonar().get(0));
-                if(k++ % 5 == 0)
+                if(k++ % 1 == 0)
                 {
                     ShootTo(enemy);
+
                 }
                 
             } else {
+                
                 MoveTo(enemy);
             }
         }
@@ -96,10 +77,21 @@ public class Atom extends Player {
                 ShootTo(enemy);
                 enemy2 = new Point((enemy.getX()), (enemy.getY() + 300f));
                 MoveTo(enemy2);
-    
             }
             
         }
+        if(time == 45)
+        {   
+            lasMove = new Point(0,0);
+            MoveTo(lasMove);
+        }
+
+        if(isloading == true)
+        {
+            StopMove();
+            StopTurbo();
+        }
+        
 
        
 

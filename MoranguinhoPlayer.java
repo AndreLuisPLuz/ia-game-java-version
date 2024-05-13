@@ -71,6 +71,10 @@ public class MoranguinhoPlayer extends Player {
         if (isloading)
             return;
     
+        if (getLife() < 50) {
+            MoveTo(cornerToGo);
+        }
+
         if (enemy == null) {
             InfraRedSensor(5f * i++);
             MoveTo(cornerToGo);
@@ -81,7 +85,7 @@ public class MoranguinhoPlayer extends Player {
     
         float dx = enemy.getX() - getLocation().getX();
         float dy = enemy.getY() - getLocation().getY();
-        if (dx * dx + dy * dy >= 300f * 300f && (cycle % 3 == 0)) {
+        if (dx * dx + dy * dy <= 600f * 600f && (cycle % 7 == 0)) {
             ShootTo(enemy);
         }
 
@@ -124,7 +128,6 @@ public class MoranguinhoPlayer extends Player {
 
             if (cycle % 2 == 0)
                 ShootTo(angleToShoot());
-                System.out.println("atirei");
 
             if (currentShot >= 20)
                 currentShot = 0;

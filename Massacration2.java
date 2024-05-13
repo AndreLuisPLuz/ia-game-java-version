@@ -76,7 +76,7 @@ public class Massacration2 extends Player{
             }
             else if (frames > 10)
             {
-                isRunning = 0;
+                isRunning = 1;
             }
         }
             
