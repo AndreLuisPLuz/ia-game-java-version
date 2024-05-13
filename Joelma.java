@@ -41,14 +41,9 @@ public class Joelma extends Player {
                 MoveTo(enemy);
             else {
                 if (i++ % 4 == 0) {
-                    if (getEnergy() > 30) {
-                        ShootTo(enemy);
-                        enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));
-                        MoveTo(enemy2);
-                    } else {
-                        enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));
-                        MoveTo(enemy2);
-                    }
+                    ShootTo(enemy);
+                    enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));
+                    MoveTo(enemy2);
                 }
             }
         }
