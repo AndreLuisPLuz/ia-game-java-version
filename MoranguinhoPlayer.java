@@ -20,50 +20,49 @@ public class MoranguinhoPlayer extends Player {
         }
     }
 
-    @Override
-    protected void loop()
-    {
+    private void fightOrFlight() {
         enemy = 
             getEnemiesInInfraRed().size() > 0 ?
             getEnemiesInInfraRed().get(0) : null;
-
+    
         if (getEnergy() < 30)
         {
             StopMove();
             isloading = true;
             enemy = null;
         }
-
+    
         if (getEnergy() > 50)
             isloading = false;
-
+    
         if (isloading)
             return;
-
+    
         if (enemy == null) {
             InfraRedSensor(5f * i++);
             return;
         }
         
         InfraRedSensorTo(enemy);
-
+    
         float dx = enemy.getX() - getLocation().getX();
         float dy = enemy.getY() - getLocation().getY();
-        if (dx * dx + dy * dy <= 200f * 200f) {
+        if (dx * dx + dy * dy >= 200f * 200f) {
             ShootTo(enemy);
         }
         else {
             MoveTo(cornerToGo);
         }
-        // float dx = enemy.getX() - getLocation().getX();
-        // float dy = enemy.getY() - getLocation().getY();
-        // if (dx * dx + dy * dy >= 300f * 300f)
-        //     MoveTo(enemy);
-        // else
-        // {
-        //     StopMove();
-        //     if (i++ % 5 == 0)
-        //         ShootTo(enemy);
+    }
+
+    @Override
+    protected void loop()
+    {
+        fightOrFlight();
+        // if (getLocation() != cornerToGo) {
+        //     fightOrFlight();
+        // } else {
+
         // }
     }
 }
