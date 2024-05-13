@@ -33,14 +33,14 @@ public class Joelma extends Player {
             return;
         }
 
-        if (i++ % 5 == 0) {
+        if (i++ % 3 == 0) {
             InfraRedSensorTo(enemy);
             float dx = enemy.getX() - getLocation().getX();
             float dy = enemy.getY() - getLocation().getY();
             if (dx * dx + dy * dy >= 500f * 500f)
                 MoveTo(enemy);
             else {
-                if (i++ % 2 == 0) {
+                if (i++ % 4 == 0) {
                     if (getEnergy() > 30) {
                         ShootTo(enemy);
                         enemy2 = new Point((enemy.getX()), (enemy.getY() + 200f));

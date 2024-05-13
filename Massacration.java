@@ -30,6 +30,7 @@ public class Massacration extends Player{
 
         if (enemy == null) {
             InfraRedSensor(5f * i++);
+            frames = 0;
             return;
         }
 
@@ -40,9 +41,6 @@ public class Massacration extends Player{
             if (i++ % 5 == 0 && frames < 4){
                 ShootTo(enemy);
                 frames++;
-            }
-            else {
-                frames = 0;
             }
     }
 }

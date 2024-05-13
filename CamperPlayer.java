@@ -13,19 +13,20 @@ public class CamperPlayer extends Player{
         super(location, new Color(162, 39, 171, 100), Color.BLACK, "GUARDA_CAIXÃO");
     }
 
-    Point movePoint = new Point(200, 200);
+    Point randomEntity = new Point(200, 200);
     Point enemyLocation = null;
 
     int frames = 0;
-    int refindDelay = 100;
+    int refindDelay = 20;
     float angle = 0;
 
+    boolean reloading = false;
     boolean enemyFound = false;
     boolean refinding = false;
 
     // EnemyInfo enemyInfo;
 
-    float distanceBetweenPoints(Point p1, Point p2) {
+    float distance(Point p1, Point p2) {
         // Calcula a diferença entre as coordenadas x e y dos dois pontos
         double deltaX = p2.getX() - p1.getX();
         double deltaY = p2.getY() - p1.getY();
@@ -53,52 +54,100 @@ public class CamperPlayer extends Player{
   
     void genMovePoint(float dist) {
         float dx = enemyLocation.getX() - getLocation().getX();
-        dx = (float)Math.sqrt(dx * dx);
-
         float dy = enemyLocation.getY() - getLocation().getY();
-        dy = (float)Math.sqrt(dy*dy);
-
-        float vx = dx / (float)Math.sqrt(dx*dx + dy*dy);
-        float vy = dy / (float)Math.sqrt(dx*dx + dy*dy);
-
-        movePoint = new Point(enemyLocation.getX() + dist * vy, enemyLocation.getY() - dist * vx);
+        float distance = (float)Math.sqrt(dx * dx + dy * dy);
+    
+        float vx = dx / distance;
+        float vy = dy / distance;
+    
+        randomEntity = new Point(enemyLocation.getX() + dist * vx, enemyLocation.getY() + dist * vy);
     }
 
+    int refind_delay = 300;
 
+    int shoot_index = 0;
     @Override
     protected void loop() {
         frames++;
+        refindDelay--;
+
         float dist = -1;
 
-        if (getEnergy() < 20) {
+        if (refindDelay < 0) {
+            refinding = true;
+
+        }
+
+        if (reloading) {
+            if (getEnergy() > 50) {
+                reloading = false;
+            }
+
             return;
         }
 
-        
-        
-        if (!enemyFound && !refinding) {
-            InfraRedSensor(angle *= 1.1);
+        if (getEnergy() < 20) {
+            reloading = true;
         }
 
-        if (enemyLocation != null) {
-            dist = distanceBetweenPoints(getLocation(), enemyLocation);
+        //Move to food
+        if (frames % 20 == 0) {
+            AccurateSonar();
+            getEntitiesInAccurateSonar().clear();
+        }
 
-            if (dist > 100) {
-                StopTurbo();
-            } else {
-                StartTurbo();
+        if (getEntitiesInAccurateSonar().size() > 0) {
+            //Get closest unit
+            Point p = getEntitiesInAccurateSonar().get(frames % getEntitiesInAccurateSonar().size());
+
+            randomEntity = p;
+            getEntitiesInAccurateSonar().clear();
+        }
+
+        if (!enemyFound) 
+            MoveTo(randomEntity);
+        else 
+            MoveTo(enemyLocation);
+
+        if (refinding && !enemyFound) {
+            InfraRedSensor(angle += 4);
+
+            if (angle > 360) {
+                angle = 0;
+                refinding = false;
+                refindDelay = 300;
             }
-            genMovePoint(30);
-            StartMove(movePoint);
         }
 
-        if (getEnemiesInInfraRed().size() > 0) {
-            enemyLocation = getEnemiesInInfraRed().get(0);
-            enemyFound = true;
+        //getClosest enemy
+
+        if (enemyFound && frames % 20 == 0) {
+            InfraRedSensor(enemyLocation);
+            enemyFound = false;
         }
 
-        
-        
+        if (getEnemiesInInfraRed().size() > 0 && enemyFound) {
+            Point e = getEnemiesInInfraRed().get(0);
 
+            for (Point i : getEnemiesInInfraRed()) {
+                if (distance(getLocation(), e) > distance(getLocation(), i)) {
+                    e = i;
+                }
+            }
+
+            if (distance(getLocation(), e) < 400) {
+                enemyLocation = e;
+
+                enemyFound = true;
+            }
+            getEnemiesInInfraRed().clear();
+            
+            
+        }
+
+        if (enemyFound)
+        if (distance(getLocation(), enemyLocation)< 300 && frames % 20 == 0) {
+            ShootTo(enemyLocation);
+        }
     }
 }
