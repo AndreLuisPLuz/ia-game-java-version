@@ -13,7 +13,7 @@ public class CamperPlayer extends Player{
         super(location, new Color(162, 39, 171, 100), Color.BLACK, "GUARDA_CAIXÃO");
     }
 
-    Point randomEntity = new Point(200, 200);
+    Point randomEntity = null;
     Point enemyLocation = null;
 
     int frames = 0;
@@ -27,6 +27,9 @@ public class CamperPlayer extends Player{
     // EnemyInfo enemyInfo;
 
     float distance(Point p1, Point p2) {
+        if (p1 == null || p2 == null)
+            return 1000 * 1000f;
+
         // Calcula a diferença entre as coordenadas x e y dos dois pontos
         double deltaX = p2.getX() - p1.getX();
         double deltaY = p2.getY() - p1.getY();
@@ -51,6 +54,7 @@ public class CamperPlayer extends Player{
         }
     }
 
+    int shoot_delay = 10;
   
     void genMovePoint(float dist) {
         float dx = enemyLocation.getX() - getLocation().getX();
@@ -90,13 +94,16 @@ public class CamperPlayer extends Player{
             reloading = true;
         }
 
-        //Move to food
-        if (frames % 20 == 0) {
-            AccurateSonar();
-            getEntitiesInAccurateSonar().clear();
+        if (getEnergy() < 10) {
+            return;
         }
 
-        if (getEntitiesInAccurateSonar().size() > 0) {
+        //Move to food
+        if (frames % 10 == 0) {
+            AccurateSonar();
+        }
+
+        if (randomEntity == null && getEntitiesInAccurateSonar().size() > 0) {
             //Get closest unit
             Point p = getEntitiesInAccurateSonar().get(frames % getEntitiesInAccurateSonar().size());
 
@@ -104,50 +111,59 @@ public class CamperPlayer extends Player{
             getEntitiesInAccurateSonar().clear();
         }
 
-        if (!enemyFound) 
+        if (randomEntity != null) {
             MoveTo(randomEntity);
-        else 
+        } else if (enemyFound) {
             MoveTo(enemyLocation);
-
-        if (refinding && !enemyFound) {
-            InfraRedSensor(angle += 4);
-
-            if (angle > 360) {
-                angle = 0;
-                refinding = false;
-                refindDelay = 300;
-            }
         }
 
+        if (randomEntity != null)
+        if (distance(getLocation(), randomEntity) < 5) {
+            randomEntity = null;
+        }
+
+        if (!enemyFound) {
+            InfraRedSensor(angle += 6);
+        }
         //getClosest enemy
+        if (enemyLocation != null) {
+            float distance_enemy = distance(getLocation(), enemyLocation);
+            if (distance_enemy < 500) {
+                StartTurbo();
+            } else {
+                StopTurbo();
+            }
 
-        if (enemyFound && frames % 20 == 0) {
-            InfraRedSensor(enemyLocation);
-            enemyFound = false;
+            shoot_delay = distance_enemy < 350 ? 5 : 15;
         }
 
-        if (getEnemiesInInfraRed().size() > 0 && enemyFound) {
-            Point e = getEnemiesInInfraRed().get(0);
-
-            for (Point i : getEnemiesInInfraRed()) {
-                if (distance(getLocation(), e) > distance(getLocation(), i)) {
-                    e = i;
-                }
-            }
-
-            if (distance(getLocation(), e) < 400) {
-                enemyLocation = e;
-
+        if (enemyFound && frames % 5 == 0) {
+            InfraRedSensorTo(enemyLocation);
+            // enemyFound = false;
+            
+            if (getEnemiesInInfraRed().size() > 0) {
                 enemyFound = true;
+                enemyLocation = getEnemiesInInfraRed().get(0);
+                getEnemiesInInfraRed().clear();
             }
-            getEnemiesInInfraRed().clear();
-            
-            
+        }
+
+        if (getEnemiesInInfraRed().size() > 0 && !enemyFound) {
+            enemyLocation = getEnemiesInInfraRed().get(0);
+            enemyFound = true;
+
+            // getEnemiesInInfraRed().clear();
         }
 
         if (enemyFound)
-        if (distance(getLocation(), enemyLocation)< 300 && frames % 20 == 0) {
+        if (distance(getLocation(), enemyLocation)< 700 && frames % shoot_delay == 0) {
             ShootTo(enemyLocation);
+        }
+
+        if (distance(getLocation(), enemyLocation) > 850) {
+            enemyFound = false;
+            enemyLocation = null;
+            getEnemiesInInfraRed();
         }
     }
 }
