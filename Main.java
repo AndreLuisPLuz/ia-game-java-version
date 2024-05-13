@@ -3,6 +3,8 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
+
 public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
@@ -32,13 +34,12 @@ public class Main {
 
         screen.setSize(frame.getSize());
 
-        // screen.AddPlayer(Joelma.class);
-        // screen.AddPlayer(DriftKing.class);
-        // screen.AddPlayer(Atom.class);
-        // screen.AddPlayer(CamperPlayer.class);
-        // screen.AddPlayer(DriftKing.class);
+
+        screen.AddPlayer(DriftKing.class);
+        screen.AddPlayer(Joelma.class);
+        screen.AddPlayer(Atom.class);
         screen.AddPlayer(MoranguinhoPlayer.class);
-        // screen.AddPlayer(Atom.class);
-        // screen.AddPlayer(CamperPlayer.class);
+        screen.AddPlayer(CamperPlayer.class);
+        screen.AddPlayer(Massacration.class);
     }
 }

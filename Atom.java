@@ -3,17 +3,22 @@ import java.awt.Color;
 public class Atom extends Player {
 
     public Atom(Point location) {
-        super(location, Color.black, Color.green, "Atom");
+        super(location, new Color(148, 0, 211, 100), Color.green, "Atom");
     }
 
     int searchindex = 0;
     int frame = 0;
     int points = 0;
     Point enemy = null;
+    Point enemy2 = null;
     boolean isloading = false;
     int i = 0;
-    int count_fires=0;
-    int stop_fire =0;
+    int j = 0;
+    int k = 0;
+    int count_fires = 0;
+    int stop_fire = 0;
+    float dx;
+    float dy;
 
     @Override
     protected void loop() {
@@ -37,54 +42,66 @@ public class Atom extends Player {
             StopMove();
             isloading = true;
             StopTurbo();
-
         }
 
         if (getEnergy() > 60)
             isloading = false;
 
+        if (getEnergy() > 90)
+            isloading = false;
+
         if (isloading)
             return;
 
-        InfraRedSensorTo(enemy);
-        float dx = enemy.getX() - getLocation().getX();
-        float dy = enemy.getY() - getLocation().getY();
-        if (dx * dx + dy * dy >= 500f * 500f)
+        if (i++ % 8 == 0) {
+            InfraRedSensorTo(enemy);
+            dx = enemy.getX() - getLocation().getX();
+            dy = enemy.getY() - getLocation().getY();
+
+        }
+
+        // if (dx * dx + dy * dy >= 700f * 700f) {
+        // AccurateSonar();
+        // // if (getEntitiesInAccurateSonar().isEmpty()) {
+        // // dx = enemy.getX() ;
+        // // dy = enemy.getY() ;
+        // MoveTo(getEntitiesInAccurateSonar().get(0));
+        // ShootTo(enemy);
+
+        // // } else {
+        // // MoveTo(getEntitiesInAccurateSonar().get(0));
+        // // }
+        // }
+        if(j++ % 50 == 0)
         {
             AccurateSonar();
-            StopTurbo();
-            if (getEntitiesInAccurateSonar().isEmpty()) {
-
-            } else {
+        }
+        
+        if(j++ % 20 == 0)
+        {
+            if (getEntitiesInAccurateSonar().size() > 0) {
                 MoveTo(getEntitiesInAccurateSonar().get(0));
-            }
-
-        }
-        else if (dx * dx + dy * dy >= 300f * 300f) 
-            MoveTo(enemy);
-        else {
-            StopMove();
-            if (count_fires >= 10) {
-                stop_fire++;    
-            }
-
-            if(stop_fire>=25){
-                count_fires =0;
-                stop_fire =0;
-            }
-
-            if (count_fires <=10) {
-                if (i++ % 1 == 0){
+                if(k++ % 5 == 0)
+                {
                     ShootTo(enemy);
-                    count_fires++;
-                    
                 }
+                
+            } else {
+                MoveTo(enemy);
             }
-
-            
-
-          
         }
+       
+        if (dx * dx + dy * dy < 500f * 500f) {
+            if (j++ % 5 == 0) {
+                ShootTo(enemy);
+                enemy2 = new Point((enemy.getX()), (enemy.getY() + 300f));
+                MoveTo(enemy2);
+    
+            }
+            
+        }
+
+       
 
     }
 
